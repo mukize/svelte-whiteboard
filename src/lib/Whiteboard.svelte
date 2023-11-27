@@ -1,25 +1,18 @@
 <script lang="ts">
-  import { Layer, Line, Stage } from "svelte-konva";
+  import { Layer, Stage } from "svelte-konva";
   import { writable } from "svelte/store";
-  import { onMount, tick } from "svelte";
-  import Konva from "konva";
-  import type { Pen } from "./pen";
+  import { onMount } from "svelte";
+  import type Konva from "konva";
   import { Whiteboard } from "./whiteboard";
+  import Pallete from "./Pallete.svelte";
+  import type { PenMode } from "./pen";
 
   const windowHeight = writable(0);
   const windowWidth = writable(0);
-  const pen = writable<Pen>({
-    mode: "pencil",
-  });
   const whiteboard = new Whiteboard();
-
+  const currentPenMode = writable<PenMode>("pencil");
   let stage: Konva.Stage;
   let layer: Konva.Layer;
-  let line = new Konva.Line({
-    points: [0, 0],
-    stroke: "white",
-    strokeWidth: 20,
-  });
 
   onMount(() => {
     windowHeight.set(window.innerHeight);
@@ -28,22 +21,19 @@
       windowHeight.set(window.innerHeight);
       windowWidth.set(window.innerWidth);
     });
-    tick().then(() => {
-      layer.add(line);
-    });
   });
   function mouseDown() {
-    if (stage) whiteboard.handleMouseDown(stage, layer, $pen);
+    if (stage) whiteboard.handleMouseDown(stage, layer, $currentPenMode);
   }
   function mouseMove() {
     if (stage) whiteboard.handleMouseMove(stage);
   }
   function mouseUp() {
     whiteboard.handleMouseUp();
-    console.log(whiteboard.recentShape);
   }
 </script>
 
+<Pallete {currentPenMode} />
 <Stage
   config={{ height: $windowHeight, width: $windowWidth }}
   on:pointerdown={mouseDown}

@@ -1,9 +1,9 @@
 import Konva from "konva";
 import type { WhiteboardShapeConstructor } from "$lib/shape";
 
-export const pencilIdent = "pencil";
-export const pencilIcon = "heroicons:pencil-20-solid";
-export const newPencil: WhiteboardShapeConstructor<Konva.Line> = function (
+export const lineIdent = "line";
+export const lineIcon = "fluent:line-32-filled";
+export const newLine: WhiteboardShapeConstructor<Konva.Line> = function (
   id,
   pos
 ) {
@@ -17,7 +17,12 @@ export const newPencil: WhiteboardShapeConstructor<Konva.Line> = function (
       tension: 0.2,
     }),
     draw(pos) {
-      this.shape.points(this.shape.points().concat([pos.x, pos.y]));
+      this.shape.points([
+        this.shape.points()[0],
+        this.shape.points()[1],
+        pos.x,
+        pos.y,
+      ]);
     },
   };
 };
