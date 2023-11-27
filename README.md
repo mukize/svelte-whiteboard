@@ -9,13 +9,15 @@ Whiteboard in svelte using [Konva](https://konvajs.org).
 
 ## To-Do
 
-- Pallete:
-  - Select mode
-  - Change options (i.e. colours, width...)
-- Modes:
-  - Line
-  - Rectangle
-  - Circle
-  - Eraser
-- History (ctrl-z, ctrl-y)
-- Co-op interactive board
+[ ] Pallete:
+  [ ] Select mode
+  [ ] Change options (i.e. colours, width...)
+[ ] Selecting and Transforming
+[ ] Modes:
+  [ ] Line
+  [ ] Rectangle
+  [ ] Circle
+  [ ] Eraser
+    [ ] Deleting
+[ ] History (ctrl-z, ctrl-y)
+[ ] Co-op interactive board
