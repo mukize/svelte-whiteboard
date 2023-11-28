@@ -24,7 +24,6 @@
   });
   function mouseDown() {
     if (stage) whiteboard.handleMouseDown(stage, layer, $currentPenMode);
-    console.log(whiteboard.recentShape?.shape);
   }
   function mouseMove() {
     if (stage) whiteboard.handleMouseMove(stage);
