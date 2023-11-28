@@ -4,19 +4,14 @@ import type Konva from "konva";
 import { pencilMode } from "./shapes/pencil";
 import { lineMode } from "./shapes/line";
 import { rectMode } from "./shapes/rect";
+import { circleMode } from "./shapes/circle";
 
 export type WhiteboardModes = Map<string, WhiteboardShapeMode<any>>;
-
-function mapModes(...modes: WhiteboardShapeMode<any>[]) {
-  let modeMap: WhiteboardModes = new Map();
-  modes.forEach((mode) => modeMap.set(mode.ident, mode));
-  return modeMap;
-}
 
 export class Whiteboard {
   drawing: boolean = false;
   defaultMode: string = pencilMode.ident;
-  modes: WhiteboardModes = mapModes(pencilMode, lineMode, rectMode);
+  modes: WhiteboardModes = mapModes(pencilMode, lineMode, rectMode, circleMode);
   recentShape: WhiteboardShape | undefined;
 
   handleMouseDown(
@@ -49,4 +44,10 @@ export class Whiteboard {
   handleMouseUp() {
     this.drawing = false;
   }
+}
+
+function mapModes(...modes: WhiteboardShapeMode<any>[]) {
+  let modeMap: WhiteboardModes = new Map();
+  modes.forEach((mode) => modeMap.set(mode.ident, mode));
+  return modeMap;
 }
