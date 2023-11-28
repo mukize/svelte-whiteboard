@@ -10,11 +10,13 @@ Whiteboard in svelte using [Konva](https://konvajs.org).
   - [ ] Change options (i.e. colours, width...)
 - [ ] Selecting and transforming
 - Modes:
-  - [ ] Pointer
   - [x] Pencil
   - [x] Line
+  - [ ] Pointer
   - [ ] Rectangle
   - [ ] Circle
   - [ ] Eraser
 - [ ] History (ctrl-z, ctrl-y)
 - [ ] Co-op interactive board
+- [ ] Zoom & scroll
+- [ ] Infinite scroll
