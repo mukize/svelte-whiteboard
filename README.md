@@ -12,9 +12,9 @@ Whiteboard in svelte using [Konva](https://konvajs.org).
 - Modes:
   - [x] Pencil
   - [x] Line
+  - [x] Rectangle
+  - [x] Circle
   - [ ] Pointer
-  - [ ] Rectangle
-  - [ ] Circle
   - [ ] Eraser
 - [ ] History (ctrl-z, ctrl-y)
 - [ ] Co-op interactive board
