@@ -1,39 +1,40 @@
 import { nanoid } from "nanoid";
-import type { WhiteboardShape } from "./shape";
-import type { PenMode } from "./pen";
+import type { WhiteboardShape, WhiteboardShapeMode } from "./util/shape";
 import type Konva from "konva";
-import { newPencil, pencilIdent } from "./shapes/pencil";
-import type { Vector2d } from "konva/lib/types";
-import { lineIdent, newLine } from "./shapes/line";
+import { pencilMode } from "./shapes/pencil";
+import { lineMode } from "./shapes/line";
+import { rectMode } from "./shapes/rect";
 
-function whiteboardShapeFactory(mode: PenMode, id: string, mousePos: Vector2d) {
-  console.log(mode);
-  switch (mode) {
-    case pencilIdent:
-      return newPencil(id, mousePos);
-    case lineIdent:
-      return newLine(id, mousePos);
-    default:
-      throw "Pen mode not supported";
-  }
+export type WhiteboardModes = Map<string, WhiteboardShapeMode<any>>;
+
+function mapModes(...modes: WhiteboardShapeMode<any>[]) {
+  let modeMap: WhiteboardModes = new Map();
+  modes.forEach((mode) => modeMap.set(mode.ident, mode));
+  return modeMap;
 }
 
 export class Whiteboard {
   drawing: boolean = false;
+  defaultMode: string = pencilMode.ident;
+  modes: WhiteboardModes = mapModes(pencilMode, lineMode, rectMode);
   recentShape: WhiteboardShape | undefined;
 
   handleMouseDown(
     stage: Konva.Stage,
     layer: Konva.Layer,
-    currentPenMode: PenMode
+    currentPenMode: string
   ) {
     const mousePos = stage.getPointerPosition();
-    if (!mousePos) return;
-    this.recentShape = whiteboardShapeFactory(
-      currentPenMode,
-      nanoid(3),
-      mousePos
-    );
+    if (!mousePos) {
+      return;
+    }
+
+    const currentMode = this.modes.get(currentPenMode);
+    if (!currentMode) {
+      throw `mode "${currentPenMode}" is not supported.`;
+    }
+
+    this.recentShape = currentMode.construct(nanoid(3), mousePos);
     layer.add(this.recentShape.shape);
     this.drawing = true;
   }

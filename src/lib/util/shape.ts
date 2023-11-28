@@ -10,3 +10,9 @@ export type WhiteboardShapeConstructor<T> = (
   id: string,
   mousePos: Vector2d
 ) => WhiteboardShape<T>;
+
+export type WhiteboardShapeMode<T> = {
+  ident: string;
+  icon: string;
+  construct: WhiteboardShapeConstructor<T>;
+};

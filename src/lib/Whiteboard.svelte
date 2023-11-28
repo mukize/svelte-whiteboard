@@ -5,12 +5,12 @@
   import type Konva from "konva";
   import { Whiteboard } from "./whiteboard";
   import Pallete from "./Pallete.svelte";
-  import type { PenMode } from "./pen";
+  import { pencilMode } from "./shapes/pencil";
 
   const windowHeight = writable(0);
   const windowWidth = writable(0);
   const whiteboard = new Whiteboard();
-  const currentPenMode = writable<PenMode>("pencil");
+  const currentPenMode = writable(whiteboard.defaultMode);
   let stage: Konva.Stage;
   let layer: Konva.Layer;
 
@@ -24,6 +24,7 @@
   });
   function mouseDown() {
     if (stage) whiteboard.handleMouseDown(stage, layer, $currentPenMode);
+    console.log(whiteboard.recentShape?.shape);
   }
   function mouseMove() {
     if (stage) whiteboard.handleMouseMove(stage);
@@ -33,7 +34,7 @@
   }
 </script>
 
-<Pallete {currentPenMode} />
+<Pallete {currentPenMode} modes={whiteboard.modes} />
 <Stage
   config={{ height: $windowHeight, width: $windowWidth }}
   on:pointerdown={mouseDown}

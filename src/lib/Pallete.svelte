@@ -1,23 +1,24 @@
 <script lang="ts">
   import type { Writable } from "svelte/store";
-  import { type PenMode, penPalletes } from "./pen";
   import Icon from "@iconify/svelte";
+  import type { WhiteboardModes } from "./whiteboard";
 
-  export let currentPenMode: Writable<PenMode>;
+  export let currentPenMode: Writable<string>;
+  export let modes: WhiteboardModes;
 
 </script>
 
 <section 
   class="z-10 fixed flex justify-around -translate-x-1/2 left-1/2 bg-tokyo-comment top-[5%] rounded-md px-5 py-3 w-1/2"
 >
-{#each penPalletes as pallete}
-  {@const isCurrentPen = $currentPenMode === pallete.mode}
+{#each modes as [ident, mode]}
+  {@const isCurrentPen = $currentPenMode === ident}
   <button
       disabled={isCurrentPen}
-      on:click={() => currentPenMode.set(pallete.mode) }
+      on:click={() => currentPenMode.set(ident)}
   >
     <Icon
-      icon={pallete.iconName}
+      icon={mode.icon}
       class="
         text-4xl transition-colors duration-150  
         {isCurrentPen ? "text-tokyo-green" : "text-tokyo-white hover:text-tokyo-magenta"}
