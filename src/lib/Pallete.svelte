@@ -9,7 +9,8 @@
 </script>
 
 <section 
-  class="z-10 fixed flex justify-around -translate-x-1/2 left-1/2 bg-tokyo-comment top-[5%] rounded-md px-5 py-3 w-1/2"
+  class="z-10 fixed flex justify-around -translate-x-1/2 left-1/2 
+    bg-tokyo-comment top-[5%] rounded-md px-5 py-3 w-1/2"
 >
 {#each modes as [ident, mode]}
   {@const isCurrentPen = $currentPenMode === ident}
