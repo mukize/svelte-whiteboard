@@ -1,8 +1,8 @@
 import Konva from "konva";
-import type { WhiteboardShapeMode } from "$lib/util/shape";
+import type { WhiteboardMode } from "$lib/types";
 
-export const pencilMode: WhiteboardShapeMode<Konva.Line> = {
-  ident: "pencil",
+export const pencilMode: WhiteboardMode<Konva.Line> = {
+  type: "shape",
   icon: "mingcute:pencil-fill",
   construct(id, pos) {
     return {
@@ -11,6 +11,7 @@ export const pencilMode: WhiteboardShapeMode<Konva.Line> = {
         points: [pos.x, pos.y],
         stroke: "#cfc9c2",
         strokeWidth: 5,
+        hitStrokeWidth: 10,
         lineCap: "round",
         tension: 0.2,
       }),

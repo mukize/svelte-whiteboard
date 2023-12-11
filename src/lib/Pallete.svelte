@@ -1,22 +1,21 @@
 <script lang="ts">
   import type { Writable } from "svelte/store";
   import Icon from "@iconify/svelte";
-  import type { WhiteboardModes } from "./whiteboard";
+  import { whiteboardModes } from "./whiteboard";
 
-  export let currentPenMode: Writable<string>;
-  export let modes: WhiteboardModes;
+  export let currentMode: Writable<string>;
 
 </script>
 
-<section 
-  class="z-10 fixed flex justify-around -translate-x-1/2 left-1/2 
+<section
+  class="pointer-events-none z-10 fixed flex justify-around -translate-x-1/2 left-1/2 
     bg-tokyo-comment top-[5%] rounded-md px-5 py-3 w-1/2"
 >
-{#each modes as [ident, mode]}
-  {@const isCurrentPen = $currentPenMode === ident}
+{#each Object.entries(whiteboardModes) as [ident, mode]}
+  {@const isCurrentPen = $currentMode === ident}
   <button
       disabled={isCurrentPen}
-      on:click={() => currentPenMode.set(ident)}
+      on:click={() => currentMode.set(ident)}
   >
     <Icon
       icon={mode.icon}

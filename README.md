@@ -15,7 +15,7 @@ Whiteboard in svelte using [Konva](https://konvajs.org).
   - [x] Rectangle
   - [x] Circle
   - [ ] Pointer
-  - [ ] Eraser
+  - [x] Eraser
 - [ ] History (ctrl-z, ctrl-y)
 - [ ] Co-op interactive board
 - [ ] Zoom & scroll

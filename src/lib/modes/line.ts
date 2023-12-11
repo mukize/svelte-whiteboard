@@ -1,8 +1,8 @@
 import Konva from "konva";
-import type { WhiteboardShapeMode } from "$lib/util/shape";
+import type { WhiteboardMode } from "$lib/types";
 
-export const lineMode: WhiteboardShapeMode<Konva.Line> = {
-  ident: "line",
+export const lineMode: WhiteboardMode<Konva.Line> = {
+  type: "shape",
   icon: "mingcute:minimize-line",
   construct(id, pos) {
     return {

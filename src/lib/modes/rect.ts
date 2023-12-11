@@ -1,8 +1,8 @@
 import Konva from "konva";
-import type { WhiteboardShapeMode } from "$lib/util/shape";
+import type { WhiteboardMode } from "$lib/types";
 
-export const rectMode: WhiteboardShapeMode<Konva.Rect> = {
-  ident: "rect",
+export const rectMode: WhiteboardMode<Konva.Rect> = {
+  type: "shape",
   icon: "mingcute:square-fill",
   construct(id, pos) {
     return {
@@ -14,8 +14,6 @@ export const rectMode: WhiteboardShapeMode<Konva.Rect> = {
         height: 0,
         stroke: "#cfc9c2",
         strokeWidth: 5,
-        lineCap: "round",
-        tension: 0.2,
       }),
       draw(pos) {
         this.shape.width(pos.x - this.shape.x());

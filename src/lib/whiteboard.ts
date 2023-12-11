@@ -1,53 +1,81 @@
 import { nanoid } from "nanoid";
-import type { WhiteboardShape, WhiteboardShapeMode } from "./util/shape";
-import type Konva from "konva";
-import { pencilMode } from "./shapes/pencil";
-import { lineMode } from "./shapes/line";
-import { rectMode } from "./shapes/rect";
-import { circleMode } from "./shapes/circle";
+import type { WhiteboardCtx, WhiteboardShape } from "./types";
+import Konva from "konva";
+import { pencilMode } from "./modes/pencil";
+import { lineMode } from "./modes/line";
+import { rectMode } from "./modes/rect";
+import { circleMode } from "./modes/circle";
+import type { Writable } from "svelte/store";
+import type { Vector2d } from "konva/lib/types";
+import { eraserMode } from "./modes/eraser";
 
-export type WhiteboardModes = Map<string, WhiteboardShapeMode<any>>;
+export const whiteboardModes = {
+  pencil: pencilMode,
+  line: lineMode,
+  rect: rectMode,
+  circle: circleMode,
+  eraser: eraserMode,
+};
+
+export type ModeIdents = keyof typeof whiteboardModes;
+let defaultMode: ModeIdents = "pencil";
 
 export class Whiteboard {
-  drawing: boolean = false;
-  defaultMode: string = pencilMode.ident;
-  modes: WhiteboardModes = mapModes(pencilMode, lineMode, rectMode, circleMode);
+  stage: Konva.Stage;
+  layer: Konva.Layer;
+  transformer: Konva.Transformer;
+
+  drawing = false;
+  bin = new Map<string, Konva.Shape>();
   recentShape: WhiteboardShape | undefined;
 
-  handleMouseDown(
+  modes = whiteboardModes;
+  currentMode = defaultMode;
+
+  constructor(
     stage: Konva.Stage,
     layer: Konva.Layer,
-    currentPenMode: string
+    transformer: Konva.Transformer,
+    currentModeStore: Writable<ModeIdents>
   ) {
-    const mousePos = stage.getPointerPosition();
-    if (!mousePos) {
-      return;
-    }
+    this.stage = stage;
+    this.layer = layer;
+    this.transformer = transformer;
+    currentModeStore.subscribe((v) => (this.currentMode = v));
+  }
 
-    const currentMode = this.modes.get(currentPenMode);
-    if (!currentMode) {
-      throw `mode "${currentPenMode}" is not supported.`;
+  handleMouseDown() {
+    const mode = this.modes[this.currentMode];
+    if (mode.type == "shape") {
+      this.recentShape = mode.construct(
+        nanoid(3),
+        this.stage.getPointerPosition() as Vector2d
+      );
+      this.layer.add(this.recentShape.shape);
     }
-
-    this.recentShape = currentMode.construct(nanoid(3), mousePos);
-    layer.add(this.recentShape.shape);
     this.drawing = true;
   }
 
-  handleMouseMove(stage: Konva.Stage) {
+  handleMouseMove(e: Konva.KonvaPointerEvent) {
     if (!this.drawing) return;
-    const mousePos = stage.getPointerPosition();
-    if (!mousePos) return;
-    this.recentShape?.draw(mousePos);
+    if (this.modes[this.currentMode].type == "shape") {
+      this.recentShape?.draw(this.stage.getPointerPosition() as Vector2d);
+    } else if (
+      this.currentMode === "eraser" &&
+      e.target instanceof Konva.Shape
+    ) {
+      e.target.listening(false);
+      this.bin.set(e.target.id(), e.target);
+      e.target.opacity(0.5);
+    }
   }
+  handleMouseEnter(e: Konva.KonvaPointerEvent) {}
 
   handleMouseUp() {
     this.drawing = false;
+    if (this.currentMode === "eraser") {
+      this.bin.forEach((s) => s.destroy());
+      this.bin = new Map();
+    }
   }
-}
-
-function mapModes(...modes: WhiteboardShapeMode<any>[]) {
-  let modeMap: WhiteboardModes = new Map();
-  modes.forEach((mode) => modeMap.set(mode.ident, mode));
-  return modeMap;
 }

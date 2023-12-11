@@ -1,8 +1,8 @@
 import Konva from "konva";
-import type { WhiteboardShapeMode } from "$lib/util/shape";
+import type { WhiteboardMode } from "$lib/types";
 
-export const circleMode: WhiteboardShapeMode<Konva.Ellipse> = {
-  ident: "circle",
+export const circleMode: WhiteboardMode<Konva.Ellipse> = {
+  type: "shape",
   icon: "mingcute:round-fill",
   construct(id, pos) {
     return {
@@ -14,8 +14,6 @@ export const circleMode: WhiteboardShapeMode<Konva.Ellipse> = {
         radiusY: 0,
         stroke: "#cfc9c2",
         strokeWidth: 5,
-        lineCap: "round",
-        tension: 0.2,
       }),
       draw(pos) {
         this.shape.radiusX(Math.abs(pos.x - this.shape.x()));
