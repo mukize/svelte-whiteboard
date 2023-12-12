@@ -66,10 +66,10 @@ export class Whiteboard {
     ) {
       e.target.listening(false);
       this.bin.set(e.target.id(), e.target);
+      console.log("Set");
       e.target.opacity(0.5);
     }
   }
-  handleMouseEnter(e: Konva.KonvaPointerEvent) {}
 
   handleMouseUp() {
     this.drawing = false;

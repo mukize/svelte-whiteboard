@@ -17,19 +17,16 @@
       stage.width(window.innerWidth);
       stage.height(window.innerHeight);
     });
+
     const layer = new Konva.Layer();
     const transformer = new Konva.Transformer();
-    
+
     stage.add(layer);
     layer.add(transformer);
     whiteboard = new Whiteboard(stage, layer, transformer, currentMode);
     stage.on("pointerdown", (e) => whiteboard.handleMouseDown());
     stage.on("pointermove", (e) => whiteboard.handleMouseMove(e));
     stage.on("pointerup", (e) => whiteboard.handleMouseUp());
-    // stage.on("mouseout", (e) => {
-    //   if(e.target instanceof Konva.Stage)
-    //     whiteboard.handleMouseUp()
-    // });
   });
   
 </script>
