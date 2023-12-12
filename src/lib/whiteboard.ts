@@ -8,8 +8,10 @@ import { circleMode } from "./modes/circle";
 import type { Writable } from "svelte/store";
 import type { Vector2d } from "konva/lib/types";
 import { eraserMode } from "./modes/eraser";
+import { pointerMode } from "./modes/pointer";
 
 export const whiteboardModes = {
+  pointer: pointerMode,
   pencil: pencilMode,
   line: lineMode,
   rect: rectMode,
@@ -44,7 +46,7 @@ export class Whiteboard {
     currentModeStore.subscribe((v) => (this.currentMode = v));
   }
 
-  handleMouseDown() {
+  handleMouseDown(e: Konva.KonvaPointerEvent) {
     const mode = this.modes[this.currentMode];
     if (mode.type == "shape") {
       this.recentShape = mode.construct(
@@ -52,6 +54,13 @@ export class Whiteboard {
         this.stage.getPointerPosition() as Vector2d
       );
       this.layer.add(this.recentShape.shape);
+    } else if (
+      this.currentMode == "pointer" &&
+      e.target instanceof Konva.Shape &&
+      !(e.target.getParent()?.className == "Transformer")
+    ) {
+      this.transformer.nodes([e.target]);
+      return;
     }
     this.drawing = true;
   }
