@@ -1,12 +1,12 @@
 <script lang="ts">
   import { writable } from "svelte/store";
   import Konva from "konva";
-  import { Whiteboard, type ModeIdents } from "./whiteboard";
+  import { Whiteboard, type ModeIdents, defaultMode } from "../whiteboard";
   import Pallete from "./Pallete.svelte";
   import { onMount } from "svelte";
 
   let whiteboard: Whiteboard;
-  const currentMode = writable<ModeIdents>("pencil");
+  const currentMode = writable<ModeIdents>(defaultMode);
   onMount(() => {
     const stage = new Konva.Stage({
       container: "whiteboard-canvas",

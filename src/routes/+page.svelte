@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Whiteboard from "$lib/Whiteboard.svelte";
+  import Whiteboard from "$lib/components/Whiteboard.svelte";
   import "../app.css";
 </script>
 

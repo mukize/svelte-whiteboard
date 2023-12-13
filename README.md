@@ -9,7 +9,7 @@ Whiteboard in svelte using [Konva](https://konvajs.org).
   - [x] Select mode
   - [ ] Change options (i.e. colours, width...)
 - [x] Singular selecting and transforming
-- [ ] Multiple selecting and transforming
+- [x] Multiple selecting and transforming
 - Modes:
   - [x] Pencil
   - [x] Line
