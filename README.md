@@ -8,15 +8,14 @@ Whiteboard in svelte using [Konva](https://konvajs.org).
 - Pallete:
   - [x] Select mode
   - [ ] Change options (i.e. colours, width...)
-- [ ] Selecting and transforming
+- [x] Singular selecting and transforming
+- [ ] Multiple selecting and transforming
 - Modes:
   - [x] Pencil
   - [x] Line
   - [x] Rectangle
   - [x] Circle
-  - [ ] Pointer
-    - [x] Click to select
-    - [ ] Group select
+  - [x] Pointer
   - [x] Eraser
 - [ ] History (ctrl-z, ctrl-y)
 - [ ] Co-op interactive board
