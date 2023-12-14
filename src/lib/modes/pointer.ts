@@ -31,8 +31,9 @@ export function pointerClick(
     !(node.getParent()?.className == "Transformer")
   ) {
     transformer.nodes([node]);
-    return;
+    return false;
   }
+  return true;
 }
 
 export function selectIntersection(

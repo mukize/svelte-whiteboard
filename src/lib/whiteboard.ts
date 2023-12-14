@@ -56,12 +56,17 @@ export class Whiteboard {
   }
 
   handleMouseDown(e: Konva.KonvaPointerEvent) {
-    const startDrawing = true;
+    let startDrawing = true;
     switch (this.currentMode) {
       case "eraser":
         break;
       case "pointer":
-        pointerClick(this.select.shape, e, this.stage, this.transformer);
+        startDrawing = pointerClick(
+          this.select.shape,
+          e,
+          this.stage,
+          this.transformer
+        );
         break;
       default:
         this.recentShape = this.modes[this.currentMode].construct(
@@ -71,9 +76,7 @@ export class Whiteboard {
         this.recentShape.shape.name("shape");
         this.layer.add(this.recentShape.shape);
     }
-    if (startDrawing) {
-      this.drawing = true;
-    }
+    if (startDrawing) this.drawing = true;
   }
 
   handleMouseMove(e: Konva.KonvaPointerEvent) {
@@ -91,13 +94,16 @@ export class Whiteboard {
   }
 
   handleMouseUp() {
-    this.drawing = false;
     switch (this.currentMode) {
       case "pointer":
-        selectIntersection(this.select.shape, this.stage, this.transformer);
+        if (this.drawing)
+          selectIntersection(this.select.shape, this.stage, this.transformer);
+        break;
       case "eraser":
         clearBin(this.bin);
+        break;
       default:
     }
+    this.drawing = false;
   }
 }
