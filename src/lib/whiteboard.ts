@@ -7,7 +7,7 @@ import { rectMode } from "./modes/rect";
 import { circleMode } from "./modes/circle";
 import type { Writable } from "svelte/store";
 import type { Vector2d } from "konva/lib/types";
-import { eraserMode } from "./modes/eraser";
+import { addToBin, clearBin, eraserMode } from "./modes/eraser";
 import { pointerMode, select, selectIntersection } from "./modes/pointer";
 
 export const whiteboardModes = {
@@ -44,7 +44,10 @@ export class Whiteboard {
     this.layer = layer;
     this.transformer = transformer;
     this.layer.add(this.select.shape);
-    currentModeStore.subscribe((v) => (this.currentMode = v));
+    currentModeStore.subscribe((v) => {
+      this.currentMode = v;
+      transformer.nodes([]);
+    });
   }
 
   handleMouseDown(e: Konva.KonvaPointerEvent) {
@@ -83,22 +86,16 @@ export class Whiteboard {
       this.currentMode === "eraser" &&
       e.target instanceof Konva.Shape
     ) {
-      e.target.listening(false);
-      this.bin.set(e.target.id(), e.target);
-      e.target.opacity(0.5);
+      addToBin(this.bin, e.target);
     }
   }
 
   handleMouseUp() {
     this.drawing = false;
     if (this.currentMode === "eraser") {
-      this.bin.forEach((s) => s.destroy());
-      this.bin.clear();
+      clearBin(this.bin);
     } else if (this.currentMode === "pointer") {
       selectIntersection(this.select.shape, this.stage, this.transformer);
-      this.select.shape.visible(false);
-      this.select.shape.width(0);
-      this.select.shape.height(0);
     }
   }
 }
