@@ -16,10 +16,15 @@ _select.shape.strokeWidth(0);
 export const select = _select;
 
 export function pointerClick(
-  node: Konva.KonvaPointerEvent["target"],
+  selectRect: Konva.Rect,
+  event: Konva.KonvaPointerEvent,
+  stage: Konva.Stage,
   transformer: Konva.Transformer
 ) {
+  const node = event.target;
   if (node instanceof Konva.Stage) {
+    selectRect.position(stage.getPointerPosition() as Konva.Vector2d);
+    selectRect.visible(true);
     transformer.nodes([]);
   } else if (
     node instanceof Konva.Shape &&

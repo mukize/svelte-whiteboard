@@ -8,7 +8,12 @@ import { circleMode } from "./modes/circle";
 import type { Writable } from "svelte/store";
 import type { Vector2d } from "konva/lib/types";
 import { addToBin, clearBin, eraserMode } from "./modes/eraser";
-import { pointerMode, select, selectIntersection } from "./modes/pointer";
+import {
+  pointerClick,
+  pointerMode,
+  select,
+  selectIntersection,
+} from "./modes/pointer";
 
 export const whiteboardModes = {
   pointer: pointerMode,
@@ -51,51 +56,48 @@ export class Whiteboard {
   }
 
   handleMouseDown(e: Konva.KonvaPointerEvent) {
-    const mode = this.modes[this.currentMode];
-    if (mode.type == "shape") {
-      this.recentShape = mode.construct(
-        nanoid(3),
-        this.stage.getPointerPosition() as Vector2d
-      );
-      this.recentShape.shape.name("shape");
-      this.layer.add(this.recentShape.shape);
-    } else if (this.currentMode == "pointer") {
-      if (e.target instanceof Konva.Stage) {
-        const pos = this.stage.getPointerPosition() as Vector2d;
-        this.select.shape.position(pos);
-        this.select.shape.visible(true);
-      } else if (
-        e.target instanceof Konva.Shape &&
-        !(e.target.getParent()?.className == "Transformer")
-      ) {
-        this.transformer.nodes([e.target]);
-        return;
-      }
+    const startDrawing = true;
+    switch (this.currentMode) {
+      case "eraser":
+        break;
+      case "pointer":
+        pointerClick(this.select.shape, e, this.stage, this.transformer);
+        break;
+      default:
+        this.recentShape = this.modes[this.currentMode].construct(
+          nanoid(3),
+          this.stage.getPointerPosition() as Vector2d
+        );
+        this.recentShape.shape.name("shape");
+        this.layer.add(this.recentShape.shape);
     }
-    this.drawing = true;
+    if (startDrawing) {
+      this.drawing = true;
+    }
   }
 
   handleMouseMove(e: Konva.KonvaPointerEvent) {
     if (!this.drawing) return;
-
-    if (this.modes[this.currentMode].type == "shape") {
-      this.recentShape?.draw(this.stage.getPointerPosition() as Vector2d);
-    } else if (this.currentMode === "pointer") {
-      this.select.draw(this.stage.getPointerPosition() as Vector2d);
-    } else if (
-      this.currentMode === "eraser" &&
-      e.target instanceof Konva.Shape
-    ) {
-      addToBin(this.bin, e.target);
+    switch (this.currentMode) {
+      case "pointer":
+        this.select.draw(this.stage.getPointerPosition() as Vector2d);
+        break;
+      case "eraser":
+        if (e.target instanceof Konva.Shape) addToBin(this.bin, e.target);
+        break;
+      default:
+        this.recentShape?.draw(this.stage.getPointerPosition() as Vector2d);
     }
   }
 
   handleMouseUp() {
     this.drawing = false;
-    if (this.currentMode === "eraser") {
-      clearBin(this.bin);
-    } else if (this.currentMode === "pointer") {
-      selectIntersection(this.select.shape, this.stage, this.transformer);
+    switch (this.currentMode) {
+      case "pointer":
+        selectIntersection(this.select.shape, this.stage, this.transformer);
+      case "eraser":
+        clearBin(this.bin);
+      default:
     }
   }
 }
