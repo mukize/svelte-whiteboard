@@ -7,6 +7,7 @@ export const pointerMode: WhiteboardMode = {
   icon: "mingcute:cursor-fill",
 };
 
+
 let _select = rectMode.construct("pointerSelector", { x: 0, y: 0 });
 _select.shape.fill("rgba(123, 68, 240, 0.33)");
 _select.shape.listening(false);
@@ -43,4 +44,7 @@ export function selectIntersection(
     }
   });
   transformer.nodes(selected);
+  rect.visible(false);
+  rect.width(0);
+  rect.height(0);
 }
