@@ -12,8 +12,7 @@ export const rectMode: WhiteboardMode<Konva.Rect> = {
         y: pos.y,
         width: 0,
         height: 0,
-        stroke: "#cfc9c2",
-        strokeWidth: 5,
+        fill: "#cfc9c2",
       }),
       draw(pos) {
         this.shape.width(pos.x - this.shape.x());

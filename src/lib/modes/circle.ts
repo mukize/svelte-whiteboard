@@ -12,8 +12,7 @@ export const circleMode: WhiteboardMode<Konva.Ellipse> = {
         y: pos.y,
         radiusX: 0,
         radiusY: 0,
-        stroke: "#cfc9c2",
-        strokeWidth: 5,
+        fill: "#cfc9c2",
       }),
       draw(pos) {
         this.shape.radiusX(Math.abs(pos.x - this.shape.x()));
