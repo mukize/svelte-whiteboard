@@ -14,8 +14,10 @@ import {
   select,
   selectIntersection,
 } from "./modes/pointer";
+import { moveMode } from "./modes/move";
 
 export const whiteboardModes = {
+  move: moveMode,
   pointer: pointerMode,
   pencil: pencilMode,
   line: lineMode,
@@ -36,6 +38,7 @@ export class Whiteboard {
   bin = new Map<string, Konva.Shape>();
   recentShape: WhiteboardShape | undefined;
   select = select;
+
   modes = whiteboardModes;
   currentMode = defaultMode;
 
@@ -46,11 +49,13 @@ export class Whiteboard {
     currentModeStore: Writable<ModeIdents>
   ) {
     this.stage = stage;
+    console.log(this.stage.position());
     this.layer = layer;
     this.transformer = transformer;
     this.layer.add(this.select.shape);
     currentModeStore.subscribe((v) => {
       this.currentMode = v;
+      this.stage.draggable(v === "move");
       transformer.nodes([]);
     });
   }
@@ -68,11 +73,14 @@ export class Whiteboard {
           this.transformer
         );
         break;
+      case "move":
+        startDrawing = false;
+        break;
       default:
-        this.recentShape = this.modes[this.currentMode].construct(
-          nanoid(3),
-          this.stage.getPointerPosition() as Vector2d
-        );
+        this.recentShape = this.modes[this.currentMode].construct(nanoid(3), {
+          x: (this.stage.getPointerPosition()?.x ?? 0) - this.stage.x(),
+          y: (this.stage.getPointerPosition()?.y ?? 0) - this.stage.y(),
+        });
         this.recentShape.shape.name("shape");
         this.layer.add(this.recentShape.shape);
     }
@@ -83,13 +91,19 @@ export class Whiteboard {
     if (!this.drawing) return;
     switch (this.currentMode) {
       case "pointer":
-        this.select.draw(this.stage.getPointerPosition() as Vector2d);
+        this.select.draw({
+          x: this.stage.x() + (this.stage.getPointerPosition()?.x ?? 0),
+          y: this.stage.y() + (this.stage.getPointerPosition()?.y ?? 0),
+        });
         break;
       case "eraser":
         if (e.target instanceof Konva.Shape) addToBin(this.bin, e.target);
         break;
       default:
-        this.recentShape?.draw(this.stage.getPointerPosition() as Vector2d);
+        this.recentShape?.draw({
+          x: (this.stage.getPointerPosition()?.x ?? 0) - this.stage.x(),
+          y: (this.stage.getPointerPosition()?.y ?? 0) - this.stage.y(),
+        });
     }
   }
 
