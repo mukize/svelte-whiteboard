@@ -30,7 +30,11 @@ export function pointerClick(
     });
     transformer.nodes([]);
   } else if (node instanceof Konva.Shape) {
-    if (!transformer.nodes().includes(node)) {
+    if (
+      !transformer.nodes().includes(node) &&
+      node.getParent()?.className !== "Transformer"
+    ) {
+      console.log();
       node.draggable(true);
       transformer.nodes([node]);
     }
