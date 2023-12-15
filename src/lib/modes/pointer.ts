@@ -23,6 +23,7 @@ export function pointerClick(
 ) {
   const node = event.target;
   if (node instanceof Konva.Stage) {
+    if (event.evt.shiftKey) return false;
     selectRect.position(stage.getPointerPosition() as Konva.Vector2d);
     selectRect.visible(true);
     transformer.nodes().forEach((n) => {
@@ -30,13 +31,16 @@ export function pointerClick(
     });
     transformer.nodes([]);
   } else if (node instanceof Konva.Shape) {
-    if (
-      !transformer.nodes().includes(node) &&
-      node.getParent()?.className !== "Transformer"
-    ) {
-      console.log();
+    if (!transformer.nodes().includes(node)) {
+      if (node.getParent()?.className === "Transformer") return false;
       node.draggable(true);
-      transformer.nodes([node]);
+      if (event.evt.shiftKey) {
+        transformer.nodes([...transformer.nodes(), node]);
+      } else {
+        transformer.nodes([node]);
+      }
+    } else if (event.evt.shiftKey) {
+      transformer.nodes(transformer.nodes().filter((n) => n !== node));
     }
     return false;
   }

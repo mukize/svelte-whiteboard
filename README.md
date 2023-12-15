@@ -11,7 +11,7 @@ Whiteboard in svelte using [Konva](https://konvajs.org).
 - Selecting and transforming
   - [x] Click select
   - [x] Drag select
-  - [ ] Shift click
+  - [x] Shift click
 - [x] Dragging
 - Modes:
   - [x] Pencil
