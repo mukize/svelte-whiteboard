@@ -25,12 +25,15 @@ export function pointerClick(
   if (node instanceof Konva.Stage) {
     selectRect.position(stage.getPointerPosition() as Konva.Vector2d);
     selectRect.visible(true);
+    transformer.nodes().forEach((n) => {
+      n.draggable(false);
+    });
     transformer.nodes([]);
-  } else if (
-    node instanceof Konva.Shape &&
-    !(node.getParent()?.className == "Transformer")
-  ) {
-    transformer.nodes([node]);
+  } else if (node instanceof Konva.Shape) {
+    if (!transformer.nodes().includes(node)) {
+      node.draggable(true);
+      transformer.nodes([node]);
+    }
     return false;
   }
   return true;
@@ -42,14 +45,16 @@ export function selectIntersection(
   transformer: Konva.Transformer
 ) {
   let selected: Konva.Node[] = [];
-  stage.find(".shape").forEach((shape) => {
-    if (
-      Konva.Util.haveIntersection(rect.getClientRect(), shape.getClientRect())
-    ) {
-      selected.push(shape);
-    }
-  });
-  transformer.nodes(selected);
+  transformer.nodes(
+    stage.find(".shape").filter((shape) => {
+      if (
+        Konva.Util.haveIntersection(rect.getClientRect(), shape.getClientRect())
+      ) {
+        shape.draggable(true);
+        return true;
+      }
+    })
+  );
   rect.visible(false);
   rect.width(0);
   rect.height(0);
